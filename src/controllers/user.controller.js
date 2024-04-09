@@ -18,7 +18,7 @@ const registerUser = asyncHandler(async (req, res) => {
   // step 1: getting user details from frontend
 
   const { fullName, username, email, password } = req.body;
-  console.log(`email: ${email} username: ${username}`);
+  //   console.log(`email: ${email} username: ${username}`);
 
   // step 2: validation - if fields are empty not
 
@@ -34,7 +34,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // step 3: checking if user already exists: using username, email
 
-  const existedUser = User.findOne({
+  const existedUser = await User.findOne({
     $or: [{ username }, { email }],
   });
 
@@ -44,10 +44,19 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // step 4: checking for images
 
-  console.log("\n req.files: ", req.files);
+  //   console.log("\n req.files: ", req.files);
   const avatarLocalPath = req.files?.avatar[0]?.path;
-  console.log("\n avatarLocalPath:", avatarLocalPath);
-  const coverImageLocalPath = req.files?.coverImage[0]?.path;
+  //   console.log("\n avatarLocalPath:", avatarLocalPath);
+  //const coverImageLocalPath = req.files?.coverImage[0]?.path;
+
+  let coverImageLocalPath;
+  if (
+    req.files &&
+    Array.isArray(req.files.coverImage) &&
+    req.files.coverImage.length > 0
+  ) {
+    coverImageLocalPath = req.files.coverImage[0].path;
+  }
 
   // check for avatar
   if (!avatarLocalPath) {
